@@ -1,0 +1,15 @@
+             PGM        PARM(&LIB &CC)
+
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+
+             DSPOBJD    OBJ(&LIB/*ALL) OBJTYPE(*ALL) OUTPUT(*OUTFILE) +
+                          OUTFILE(&PATH/LOBJOUTF)
+
+
+ END:        CALL       PGM(LADPTTOOL/LOBJSQL) PARM(&PATH)
+
+             ENDPGM

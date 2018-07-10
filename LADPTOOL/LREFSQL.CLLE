@@ -1,0 +1,57 @@
+             PGM        PARM(&CC)
+
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(600)
+             DCL        VAR(&SQL2) TYPE(*CHAR) LEN(600)
+             DCL        VAR(&SQL3) TYPE(*CHAR) LEN(600)
+
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+
+      /*     RUNSQL     REQUEST('SELECT COMMONLOC.NAME, +            */
+      /*               COMMONLOC.TYP, COMMONLOC.SNAME, +          */
+      /*                COMMONLOC.CC, COMMONLOC.ATR, +             */
+      /*                  COMMONLOC.REFOBJ, COMMONLOC.REFOBJTYPE, +  */
+      /*                  PGMREF.WHPNAM, PGMREF.WHFNAM, +            */
+      /*                  PGMREF.WHOTYP FROM COMMONLOC, PGMREF +     */
+      /*                  WHERE COMMONLOC.NAME = PGMREF.WHFNAM') +   */
+      /*                  OUTPUT(*OUTFILE) OUTFILE(A232887/LOCPGM)   */
+
+       /*    RUNSQL  REQUEST('INSERT INTO A232887/OUTTABLE (NAME, +   */
+        /*                SNAME, CC, REFOBJ, REFOBJTYPE) SELECT +        */
+       /*                 WHPNAM, WHSYSN, OUTTABLE.CC, WHFNAM, +         */
+    /*                  WHOTYP FROM PGMREF, OUTTABLE WHERE +             */
+     /*                     OUTTABLE.NAME = PGMREF.WHFNAM')             */
+
+             CHGVAR     VAR(&SQL) VALUE('SELECT DISTINCT WHPNAM, WHSYSN, +
+                          RESTABLE.CC, WHFNAM, WHOTYP FROM ' *CAT &PATH +
+                          *TCAT '/LREFOUTF, ' *CAT &PATH *TCAT '/RESTABLE +
+                          WHERE RESTABLE.NAME = LREFOUTF.WHFNAM')
+
+
+
+             RUNSQL     REQUEST(&SQL) OUTPUT(*OUTFILE) +
+                          OUTFILE(&PATH/MATCHPGM) MEMBER(*REPLACE/*FIRST)
+
+             CHGVAR     VAR(&SQL2) VALUE('INSERT INTO ' *CAT &PATH *TCAT +
+                          '/RESTABLE (NAME, SNAME, CC, REFOBJ, REFOBJTYPE) +
+                          SELECT * FROM ' *CAT &PATH *TCAT '/MATCHPGM' )
+
+             RUNSQL     REQUEST(&SQL2)
+
+
+      /*     RUNSQL     REQUEST('INSERT INTO A232887/COMMONLOC +       */
+      /*                  (NAME, SNAME, CC, REFOBJ, REFOBJTYPE) +      */
+      /*                  SELECT WHPNAM, SNAME, CC, WHFNAM, WHOTYP +   */
+      /*                  FROM LOCPGM')                                */
+
+             CHGVAR     VAR(&SQL3) VALUE('UPDATE ' *CAT &PATH *TCAT +
+                          '/RESTABLE SET TYP = ''*PGM'', CATR = ''LREF'' +
+                          WHERE CATR = '' ''')
+
+             RUNSQL     REQUEST(&SQL3)
+
+
+
+
+             ENDPGM

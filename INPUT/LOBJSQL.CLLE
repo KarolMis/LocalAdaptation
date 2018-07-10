@@ -1,0 +1,27 @@
+             PGM        PARM(&PATH)
+
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(600)
+             DCL        VAR(&SQL2) TYPE(*CHAR) LEN(600)
+
+             CHGVAR     VAR(&SQL) VALUE('INSERT INTO ' *CAT &PATH *TCAT +
+                          '/RESTABLE (NAME, TYP, SNAME, CC, LIB, ATR) +
+                          SELECT ODOBNM, ODOBTP, ODOBSY, SUBSTR(ODLBNM, 1, +
+                          2), ODLBNM, ODOBAT FROM ' *CAT &PATH *TCAT +
+                          '/LOBJOUTF')
+
+             QSYS/RUNSQL SQL(&SQL) COMMIT(*NONE)
+
+             CHGVAR     VAR(&SQL2) VALUE('UPDATE ' *CAT &PATH *TCAT +
+                          '/RESTABLE SET CATR = ''LOBJ'' WHERE CATR = '' +
+                          ''')
+
+             QSYS/RUNSQL SQL(&SQL2) COMMIT(*NONE)
+
+
+           /*  RUNSQL     REQUEST('SELECT OUTTABLE.* FROM A232887/RESTABLE, +
+                          A232887/COREOBJ WHERE RESTABLE.NAME = +
+                          COREOBJ.CIOBJ') OUTPUT(*OUTFILE) +
+                          OUTFILE(&PATH/COMMONLOC)    */
+
+             ENDPGM

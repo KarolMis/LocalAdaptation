@@ -1,0 +1,17 @@
+             PGM        PARM(&CC)
+
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(600)
+
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+
+             CHGVAR     VAR(&SQL) VALUE('SELECT NAME, GET_ATR(NAME), +
+                          GET_DET2(NAME) FROM ' *CAT &PATH *TCAT +
+                          '/DISCOBJ')
+
+
+             VRUNSQL     REQUEST(&SQL) OUTPUT(*OUTFILE) +
+                          OUTFILE(&PATH/RESULTX) MEMBER(*REPLACE/*FIRST)
+
+             ENDPGM

@@ -1,0 +1,33 @@
+             PGM        PARM(&LIB &SRCLIB &CC)
+
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SRCLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(400)
+             DCL        VAR(&SQL2) TYPE(*CHAR) LEN(400)
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+
+             DSPOBJD    OBJ(&LIB/*ALL) OBJTYPE(*ALL) DETAIL(*SERVICE) +
+                          OUTPUT(*OUTFILE) OUTFILE(&PATH/LCMPOUTF) +
+                          OUTMBR(*FIRST *REPLACE)
+
+             CHGVAR     VAR(&SQL) VALUE('INSERT INTO ' *CAT &PATH *TCAT +
+                          '/RESTABLE (NAME, TYP, SNAME, CC, LIB, SRCFILE, +
+                          SRCLIB) SELECT ODOBNM, ODOBTP, ODOBSY, +
+                          SUBSTR(ODLBNM, 1, 2), ODLBNM, ODSRCF, ODSRCL +
+                          FROM ' *CAT &PATH *TCAT '/LCMPOUTF WHERE ODSRCL +
+                          = ''' *TCAT &SRCLIB *TCAT '''')
+
+             QSYS/RUNSQL  SQL(&SQL) COMMIT(*NONE) 
+
+             CHGVAR     VAR(&SQL2) VALUE('UPDATE ' *CAT &PATH *TCAT +
+                          '/RESTABLE SET CATR = ''LCMP'' WHERE CATR = '' +
+                          ''')
+
+             QSYS/RUNSQL SQL(&SQL2) COMMIT(*NONE)
+
+
+             ENDPGM
+

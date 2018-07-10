@@ -1,0 +1,19 @@
+             PGM        PARM(&LIB &OBJ &CC)
+
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+
+             DSPFD      FILE(&LIB/&OBJ) TYPE(*MBRLIST) OUTPUT(*OUTFILE) +
+                          OUTFILE(&PATH/LSRCOUTF) OUTMBR(*FIRST *ADD)
+
+ END:        CALL       PGM(LADPTTOOL/LSRCSQL) PARM(&PATH)
+
+
+             ENDPGM
+
+
+

@@ -1,0 +1,16 @@
+             PGM        PARM(&PATH)
+
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(600)
+
+             CHGVAR     VAR(&SQL) VALUE('UPDATE ' *CAT &PATH *TCAT +
+                          '/RESTABLE SET TYP = ''*FILE'' WHERE (ATR = +
+                          ''PF'' OR ATR = ''LF'' OR ATR = ''PRTF'' OR ATR +
+                          = ''DSPF'') AND CATR = ''LS''')
+
+             RUNSQL     REQUEST(&SQL)
+
+
+             ENDPGM
+
+

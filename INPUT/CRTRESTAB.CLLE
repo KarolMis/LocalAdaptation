@@ -1,0 +1,33 @@
+             PGM        PARM(&CC)
+
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(600)
+             DCL        VAR(&SQL2) TYPE(*CHAR) LEN(600)
+
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+             CHGVAR     VAR(&SQL) VALUE('CREATE TABLE ' *CAT &PATH *TCAT +
+                          '/RESTABLE (NAME CHARACTER ( 10) NOT NULL WITH +
+                          DEFAULT, TYP CHARACTER ( 10), SNAME CHARACTER ( +
+                          10) NOT NULL WITH DEFAULT, CC CHARACTER ( 3) NOT +
+                          NULL WITH DEFAULT, CATR CHARACTER ( 5) NOT NULL +
+                          WITH DEFAULT, REFOBJ CHARACTER ( 10), REFOBJTYPE +
+                          CHARACTER ( 10), LIB CHARACTER(10), SRCFILE +
+                          CHARACTER (10), SRCLIB  CHARACTER (10), ATR +
+                          CHARACTER( 10))')
+
+             CHGVAR     VAR(&SQL2) VALUE('LABEL ON COLUMN ' *CAT &PATH +
+                          *TCAT '/RESTABLE (NAME IS ''Name'', TYP IS +
+                          ''Type'', SNAME IS ''System Name'', CC IS +
+                          ''Country Code'', CATR IS ''Cause Attribute'', +
+                          REFOBJ IS ''Referenced Object'', REFOBJTYPE IS +
+                          ''Referenced Object Type'')')
+
+
+             VRUNSQL     REQUEST(&SQL) 
+
+             /*   QSYS/RUNSQL SQL(&SQL) COMMIT(*NONE) */ 
+
+
+
+             ENDPGM

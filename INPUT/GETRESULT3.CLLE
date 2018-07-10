@@ -1,0 +1,20 @@
+             PGM        PARM(&CC)                                      
+                                                                           
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)                    
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)                 
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(600)                 
+             DCL        VAR(&SQL2) TYPE(*CHAR) LEN(600)                
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)                                                                                   
+             CHGVAR     VAR(&SQL) VALUE('SELECT NAME, CC, +            
+                         GET_ATR(NAME), GET_DET2(NAME) FROM ' *CAT +  
+                         &PATH *TCAT '/DISCOBJ')                      
+             CHGVAR     VAR(&SQL2) VALUE('SELECT DISTINCT RESULT3.*, +  
+                         COREOBJ.*    FROM ' *CAT &PATH *TCAT +  
+                         ' /RESULT3, ' *CAT &PATH *TCAT ' +            
+                         /COREOBJ              WHERE RESULT3.NAME= +  
+                         COREOBJ.CIOBJ')                                                                             
+             VRUNSQL     REQUEST(&SQL) OUTPUT(*OUTFILE) +               
+                         OUTFILE(&PATH/RESULT3) MEMBER(*REPLACE/*FIRST)
+             VRUNSQL     REQUEST(&SQL2) OUTPUT(*OUTFILE) +               
+                         OUTFILE(LADPTTOOL/LRES3) MEMBER(*ADD/*FIRST)  
+             ENDPGM                                                    

@@ -1,0 +1,36 @@
+             PGM        PARM(&PATH)
+
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(600)
+             DCL        VAR(&SQL2) TYPE(*CHAR) LEN(600)
+
+             CHGVAR     VAR(&SQL) VALUE('INSERT INTO ' *CAT &PATH *TCAT +
+                          '/RESTABLE (NAME, ATR, SNAME, CC, LIB, SRCFILE) +
+                          SELECT MLNAME, MLSEU2, MLSYSN, SUBSTR(MLLIB, 1, +
+                          2), MLLIB, MLFILE FROM ' *CAT &PATH *TCAT +
+                          '/LSRCOUTF')
+
+
+
+             RUNSQL     REQUEST(&SQL)
+
+             /* uzupelnienie odpowiednego atrybutu */
+
+             CHGVAR     VAR(&SQL2) VALUE('UPDATE ' *CAT &PATH *TCAT +
+                          '/RESTABLE SET CATR = ''LS'' WHERE CATR = '' ''')
+
+             RUNSQL     REQUEST(&SQL2)
+
+             RUNSQL     REQUEST('SELECT TCHKITMR.CILIST, +
+                          TPRJTSKF.TUSRD5,TCHKITMR.CIOBJ, TCHKITMR.CITYPE, +
+                          TCHKITMR.CIUSER, TPRJTSKF.TTASK, +
+                          TPRJTSKF.TDESC,TPRJTSKF.TPROJ FROM +
+                          SOFTT1CA/TCHKITMR, SOFTT1CA/TPRJTSKF WHERE +
+                          substr(CILIST, 5, 4)= Ttask and substr(CILIST, +
+                          1, 4)= TPROJ and CIAPP = ''T0R1'' and CILIST +
+                          like ''R132%'' and CILEV = 20') OUTPUT(*OUTFILE) +
+                          OUTFILE(&PATH/COREOBJ)
+
+             CALL       PGM(LADPTTOOL/LSRCSETTYP) PARM(&PATH)
+
+             ENDPGM

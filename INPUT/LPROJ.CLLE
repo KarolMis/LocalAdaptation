@@ -1,0 +1,23 @@
+             PGM        PARM(&PROJ &CC)
+
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&PROJ) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(550)
+             CHGJOB     CCSID(278)
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+
+              CHGVAR     VAR(&SQL) VALUE('SELECT WORKLIST as CILIT, IAT as +
+                          TUSRD5, OBJ AS CIOBJ, TYPE_CODE as CITYPE, +
+                          PROGRAMMER AS CIUSER, TASK_NO AS TTASK, +
+                          TASK_DESC AS TDESC, PROJECT AS TPROJ FROM +
+                          vf00.a023028.vipsptfobj  WHERE PROJECT = ' *TCAT +
+                          '''' *TCAT &PROJ *TCAT '''')         
+
+
+             SNDPGMMSG  MSG(&SQL)
+             VRUNSQL    REQUEST(&SQL) OUTPUT(*OUTFILE) +
+                          OUTFILE(&PATH/COREOBJ)
+
+
+             ENDPGM 

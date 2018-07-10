@@ -1,0 +1,12 @@
+             PGM        PARM(&LIB &CC)
+
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&CC) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PATH) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&PATH) VALUE('LADPT_' *TCAT &CC)
+
+             DSPPGMREF  PGM(&LIB/*ALL) OUTPUT(*OUTFILE) OBJTYPE(*ALL) +
+                          OUTFILE(&PATH/LREFOUTF)
+
+             ENDPGM
